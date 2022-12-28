@@ -1,0 +1,5 @@
+{
+  "HTTP/{{0}} in API response": "API返回HTTP/{{0}}",
+  "Bad HTTP status in API response": "API返回错误的HTTP状态",
+  "": ""
+}
