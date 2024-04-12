@@ -8,6 +8,7 @@ use Magpie\Facades\Http\HttpClientResponse;
 use Magpie\General\Concepts\BinaryContentable;
 use Magpie\General\Contents\SimpleBinaryContent;
 use Magpie\General\Names\CommonHttpHeader;
+use Magpie\General\Names\CommonHttpStatusCode;
 use Magpie\General\Names\CommonMimeType;
 use Magpie\General\Traits\StaticClass;
 use MagpieLib\Interops\Exceptions\BadContentDecodeHardInteropsException;
@@ -34,7 +35,7 @@ class ContentHttpApiResponse
     {
         try {
             $httpStatusCode = $response->getHttpStatusCode();
-            if ($httpStatusCode !== 200) throw new BadHttpStatusResponseHardInteropsException($httpStatusCode);
+            if ($httpStatusCode !== CommonHttpStatusCode::OK) throw new BadHttpStatusResponseHardInteropsException($httpStatusCode);
 
             $headers = $response->getHeaders();
             $filename = HttpContentDisposition::decodeFilename($headers->optional(CommonHttpHeader::CONTENT_DISPOSITION));
