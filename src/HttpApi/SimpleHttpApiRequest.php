@@ -37,4 +37,27 @@ class SimpleHttpApiRequest extends CommonHttpApiRequest
 
         return $this->runRequest($requestMakerFn, $headers, $options);
     }
+
+
+    /**
+     * Perform a 'HEAD' request
+     * @param UriBuilder|string $url
+     * @param iterable<string, mixed> $args
+     * @param iterable<string, mixed> $headers
+     * @param iterable<HttpClientRequestOption> $options
+     * @return HttpClientResponse
+     * @throws SafetyCommonException
+     * @throws CommonInteropsException
+     */
+    public function head(UriBuilder|string $url, iterable $args, iterable $headers = [], iterable $options = []) : HttpClientResponse
+    {
+        $urlBuilder = $url instanceof UriBuilder ? $url : UriBuilder::parse($url);
+        $urlBuilder->withQueries($args);
+
+        $requestMakerFn = function () use ($urlBuilder) : HttpClientPendingRequest {
+            return HttpClient::initialize()->prepare(CommonHttpMethod::HEAD, $urlBuilder);
+        };
+
+        return $this->runRequest($requestMakerFn, $headers, $options);
+    }
 }
