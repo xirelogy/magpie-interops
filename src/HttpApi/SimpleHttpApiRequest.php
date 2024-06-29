@@ -3,7 +3,6 @@
 namespace MagpieLib\Interops\HttpApi;
 
 use Magpie\Exceptions\SafetyCommonException;
-use Magpie\Facades\Http\HttpClient;
 use Magpie\Facades\Http\HttpClientPendingRequest;
 use Magpie\Facades\Http\HttpClientRequestOption;
 use Magpie\Facades\Http\HttpClientResponse;
@@ -32,7 +31,7 @@ class SimpleHttpApiRequest extends CommonHttpApiRequest
         $urlBuilder->withQueries($args);
 
         $requestMakerFn = function () use ($urlBuilder) : HttpClientPendingRequest {
-            return HttpClient::initialize()->prepare(CommonHttpMethod::GET, $urlBuilder);
+            return $this->initializeHttpClient()->prepare(CommonHttpMethod::GET, $urlBuilder);
         };
 
         return $this->runRequest($requestMakerFn, $headers, $options);
@@ -55,7 +54,7 @@ class SimpleHttpApiRequest extends CommonHttpApiRequest
         $urlBuilder->withQueries($args);
 
         $requestMakerFn = function () use ($urlBuilder) : HttpClientPendingRequest {
-            return HttpClient::initialize()->prepare(CommonHttpMethod::HEAD, $urlBuilder);
+            return $this->initializeHttpClient()->prepare(CommonHttpMethod::HEAD, $urlBuilder);
         };
 
         return $this->runRequest($requestMakerFn, $headers, $options);

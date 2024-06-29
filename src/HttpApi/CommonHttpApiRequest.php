@@ -5,10 +5,12 @@ namespace MagpieLib\Interops\HttpApi;
 use Exception;
 use Magpie\Exceptions\SafetyCommonException;
 use Magpie\Facades\Http\Exceptions\ClientException;
+use Magpie\Facades\Http\HttpClient;
 use Magpie\Facades\Http\HttpClientPendingRequest;
 use Magpie\Facades\Http\HttpClientResponse;
 use Magpie\General\Names\CommonHttpStatusCode;
 use Magpie\General\Traits\StaticCreatable;
+use Magpie\Logs\Concepts\Loggable;
 use MagpieLib\Interops\Exceptions\BadHttpStatusResponseHardInteropsException;
 use MagpieLib\Interops\Exceptions\CommonInteropsException;
 use MagpieLib\Interops\Exceptions\InternalHardInteropsException;
@@ -21,6 +23,10 @@ abstract class CommonHttpApiRequest
 {
     use StaticCreatable;
 
+    /**
+     * @var Loggable|null Logger instance to be associated
+     */
+    protected ?Loggable $logger = null;
     /**
      * @var bool If bad HTTP status code will be rejected
      */
@@ -60,6 +66,32 @@ abstract class CommonHttpApiRequest
         } catch (Exception $ex) {
             throw new InternalHardInteropsException(previous: $ex);
         }
+    }
+
+
+    /**
+     * Initialize a HTTP client
+     * @return HttpClient
+     * @throws SafetyCommonException
+     */
+    protected final function initializeHttpClient() : HttpClient
+    {
+        $ret = HttpClient::initialize();
+        if ($this->logger !== null) $ret->setLogger($this->logger);
+
+        return $ret;
+    }
+
+
+    /**
+     * Specify the logger interface for the HTTP client
+     * @param Loggable|null $logger
+     * @return $this
+     */
+    public function withLogger(?Loggable $logger) : static
+    {
+        $this->logger = $logger;
+        return $this;
     }
 
 

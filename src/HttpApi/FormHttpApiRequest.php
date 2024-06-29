@@ -4,7 +4,6 @@ namespace MagpieLib\Interops\HttpApi;
 
 use Magpie\Exceptions\SafetyCommonException;
 use Magpie\Facades\Http\Bodies\HttpFormClientRequestBody;
-use Magpie\Facades\Http\HttpClient;
 use Magpie\Facades\Http\HttpClientPendingRequest;
 use Magpie\Facades\Http\HttpClientResponse;
 use Magpie\General\Names\CommonHttpMethod;
@@ -32,7 +31,7 @@ class FormHttpApiRequest extends CommonHttpApiRequest
 
         $requestMakerFn = function () use ($urlBuilder, $payload) : HttpClientPendingRequest {
             $body = $payload instanceof HttpFormClientRequestBody ? $payload : new HttpFormClientRequestBody($payload);
-            return HttpClient::initialize()->prepare(CommonHttpMethod::POST, $urlBuilder)->withBody($body);
+            return $this->initializeHttpClient()->prepare(CommonHttpMethod::POST, $urlBuilder)->withBody($body);
         };
 
         return $this->runRequest($requestMakerFn, $headers, $options);
