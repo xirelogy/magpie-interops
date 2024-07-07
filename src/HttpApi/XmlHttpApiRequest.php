@@ -38,4 +38,28 @@ class XmlHttpApiRequest extends CommonHttpApiRequest
 
         return $this->runRequest($requestMakerFn, $headers, $options);
     }
+
+
+    /**
+     * Perform a PUT request with XML payload
+     * @param UriBuilder|string $url
+     * @param HttpXmlClientRequestBody|object $payload
+     * @param iterable<string, mixed> $headers
+     * @param iterable<HttpClientRequestOption> $options
+     * @return HttpClientResponse
+     * @throws SafetyCommonException
+     * @throws CommonInteropsException
+     * @noinspection PhpDocSignatureInspection
+     */
+    public function put(UriBuilder|string $url, object $payload, iterable $headers = [], iterable $options = []) : HttpClientResponse
+    {
+        $urlBuilder = $url instanceof UriBuilder ? $url : UriBuilder::parse($url);
+
+        $requestMakerFn = function () use ($urlBuilder, $payload) : HttpClientPendingRequest {
+            $body = $payload instanceof HttpXmlClientRequestBody ? $payload : new HttpXmlClientRequestBody($payload);
+            return $this->initializeHttpClient()->prepare(CommonHttpMethod::PUT, $urlBuilder)->withBody($body);
+        };
+
+        return $this->runRequest($requestMakerFn, $headers, $options);
+    }
 }
